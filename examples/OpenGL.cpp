@@ -8,14 +8,14 @@
 
 int main() {
 	// An sf::Window for raw OpenGL rendering.
-	sf::Window app_window( sf::VideoMode( 800, 600 ), "SFGUI with OpenGL example", sf::Style::Titlebar | sf::Style::Close );
+	sf::Window app_window( sf::VideoMode( {800, 600} ), "SFGUI with OpenGL example", sf::Style::Titlebar | sf::Style::Close );
 
 	// Create an SFGUI. This is required before doing anything with SFGUI.
 	sfg::SFGUI sfgui;
 
 	// Set the SFML Window's context back to the active one. SFGUI creates
 	// a temporary context on creation that is set active.
-	app_window.setActive();
+	(void)app_window.setActive();
 
 	// Initial OpenGL setup.
 	// We have to set up our own OpenGL viewport because we are using an sf::Window.
@@ -31,16 +31,16 @@ int main() {
 	table->SetRowSpacings( 5.f );
 	table->SetColumnSpacings( 5.f );
 
-	table->Attach( sfg::Label::Create( "Change the color of the rect using the scales below." ), sf::Rect<std::uint32_t>( ( 0, 0 ), ( 3, 1 ) ), sfg::Table::FILL, sfg::Table::FILL );
-	table->Attach( sfg::Label::Create( "Red:" ), sf::Rect<std::uint32_t>( ( 0, 1 ), ( 1, 1 ) ), sfg::Table::FILL, sfg::Table::FILL );
-	table->Attach( red_scale, sf::Rect<std::uint32_t>( ( 1, 1 ), ( 1, 1 ) ), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL | sfg::Table::EXPAND );
-	table->Attach( sfg::Label::Create( "Green:" ), sf::Rect<std::uint32_t>( ( 0, 2 ), ( 1, 1 ) ), sfg::Table::FILL, sfg::Table::FILL );
-	table->Attach( green_scale, sf::Rect<std::uint32_t>( ( 1, 2 ), ( 1, 1 ) ), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL | sfg::Table::EXPAND );
-	table->Attach( sfg::Label::Create( "Blue:" ), sf::Rect<std::uint32_t>( ( 0, 3 ), ( 1, 1 ) ), sfg::Table::FILL, sfg::Table::FILL );
-	table->Attach( blue_scale, sf::Rect<std::uint32_t>( ( 1, 3 ), ( 1, 1 ) ), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL | sfg::Table::EXPAND );
-	table->Attach( sfg::Label::Create( "Angle:" ), sf::Rect<std::uint32_t>( ( 0, 4 ), ( 1, 1 ) ), sfg::Table::FILL, sfg::Table::FILL );
-	table->Attach( angle_scale, sf::Rect<std::uint32_t>( ( 1, 4 ), ( 1, 1 ) ), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL | sfg::Table::EXPAND );
-	table->Attach( auto_check, sf::Rect<std::uint32_t>( ( 2, 4 ), ( 1, 1 ) ), sfg::Table::FILL, sfg::Table::FILL );
+	table->Attach( sfg::Label::Create( "Change the color of the rect using the scales below." ), sf::Rect<std::uint32_t>( {0, 0}, {3, 1} ), sfg::Table::FILL, sfg::Table::FILL );
+	table->Attach( sfg::Label::Create( "Red:" ), sf::Rect<std::uint32_t>( {0, 1}, {1, 1} ), sfg::Table::FILL, sfg::Table::FILL );
+	table->Attach( red_scale, sf::Rect<std::uint32_t>( {1, 1}, {1, 1} ), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL | sfg::Table::EXPAND );
+	table->Attach( sfg::Label::Create( "Green:" ), sf::Rect<std::uint32_t>( {0, 2}, {1, 1} ), sfg::Table::FILL, sfg::Table::FILL );
+	table->Attach( green_scale, sf::Rect<std::uint32_t>( {1, 2}, {1, 1} ), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL | sfg::Table::EXPAND );
+	table->Attach( sfg::Label::Create( "Blue:" ), sf::Rect<std::uint32_t>( {0, 3}, {1, 1} ), sfg::Table::FILL, sfg::Table::FILL );
+	table->Attach( blue_scale, sf::Rect<std::uint32_t>( {1, 3}, {1, 1} ), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL | sfg::Table::EXPAND );
+	table->Attach( sfg::Label::Create( "Angle:" ), sf::Rect<std::uint32_t>( {0, 4}, {1, 1} ), sfg::Table::FILL, sfg::Table::FILL );
+	table->Attach( angle_scale, sf::Rect<std::uint32_t>( {1, 4}, {1, 1} ), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL | sfg::Table::EXPAND );
+	table->Attach( auto_check, sf::Rect<std::uint32_t>( {2, 4}, {1, 1} ), sfg::Table::FILL, sfg::Table::FILL );
 
 	auto window = sfg::Window::Create();
 	window->SetTitle( "SFGUI with OpenGL" );
@@ -70,19 +70,17 @@ int main() {
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();
 
-	sf::Event event;
-
 	sf::Clock clock;
 
 	while( app_window.isOpen() ) {
 		auto delta = clock.restart().asSeconds();
 
-		while( app_window.pollEvent( event ) ) {
-			if( event.type == sf::Event::Closed ) {
+		while( const std::optional event = app_window.pollEvent() ) {
+			if( event->is<sf::Event::Closed>() ) {
 				return 0;
 			}
 			else {
-				desktop.HandleEvent( event );
+				desktop.HandleEvent( *event );
 			}
 		}
 

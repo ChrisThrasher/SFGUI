@@ -34,7 +34,7 @@ jobs:
       with:
         fetch-depth: 0
         repository: SFML/SFML
-        ref: 3.0.0-rc.1
+        ref: 3.0.0
         path: SFML
 
     - name: SFML - Configure CMake

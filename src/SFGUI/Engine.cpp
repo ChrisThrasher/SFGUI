@@ -4,6 +4,7 @@
 #include <SFGUI/RenderQueue.hpp>
 #include <SFGUI/Parsers/ThemeParser/Parse.hpp>
 
+#include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <fstream>
@@ -92,16 +93,16 @@ sf::Vector2f Engine::GetFontHeightProperties( const sf::Font& font, unsigned int
 	if( m_character_sets.empty() ) {
 		for( std::uint32_t current_character = 0; current_character < 0x0370; ++current_character ) {
 			const auto& glyph = font.getGlyph( current_character, font_size, false );
-			properties.x = std::max( properties.x, static_cast<float>( glyph.bounds.height ) );
-			properties.y = std::max( properties.y, static_cast<float>( -glyph.bounds.top ) );
+			properties.x = std::max( properties.x, static_cast<float>( glyph.bounds.size.y ) );
+			properties.y = std::max( properties.y, static_cast<float>( -glyph.bounds.position.y ) );
 		}
 	}
 
 	for( const auto character_set : m_character_sets ) {
 		for( std::uint32_t current_character = character_set.first; current_character < character_set.second; ++current_character ) {
 			const auto& glyph = font.getGlyph( current_character, font_size, false );
-			properties.x = std::max( properties.x, static_cast<float>( glyph.bounds.height ) );
-			properties.y = std::max( properties.y, static_cast<float>( -glyph.bounds.top ) );
+			properties.x = std::max( properties.x, static_cast<float>( glyph.bounds.size.y ) );
+			properties.y = std::max( properties.y, static_cast<float>( -glyph.bounds.position.y ) );
 		}
 	}
 
@@ -122,7 +123,7 @@ float Engine::GetFontLineSpacing( const sf::Font& font, unsigned int font_size )
 	return static_cast<float>( font.getLineSpacing( font_size ) );
 }
 
-sf::Vector2f Engine::GetTextStringMetrics( const std::basic_string<std::uint32_t>& string, const sf::Font& font, unsigned int font_size ) const {
+sf::Vector2f Engine::GetTextStringMetrics( const std::u32string& string, const sf::Font& font, unsigned int font_size ) const {
 	// SFML is incapable of giving us the metrics we need so we have to do it ourselves.
 	auto horizontal_spacing = static_cast<float>( font.getGlyph( L' ', font_size, false ).advance );
 	auto vertical_spacing = static_cast<float>( font.getLineSpacing( font_size ) );
@@ -160,7 +161,7 @@ sf::Vector2f Engine::GetTextStringMetrics( const std::basic_string<std::uint32_t
 		const auto& glyph = font.getGlyph( current_character, font_size, false );
 
 		metrics.x += static_cast<float>( glyph.advance );
-		metrics.y = std::max( metrics.y, static_cast<float>( glyph.bounds.height ) );
+		metrics.y = std::max( metrics.y, static_cast<float>( glyph.bounds.size.y ) );
 	}
 
 	metrics.x = std::max( longest_line, metrics.x );
@@ -206,7 +207,7 @@ sf::Vector2f Engine::GetTextStringMetrics( const sf::String& string, const sf::F
 		const auto& glyph = font.getGlyph( current_character, font_size, false );
 
 		metrics.x += static_cast<float>( glyph.advance );
-		metrics.y = std::max( metrics.y, static_cast<float>( glyph.bounds.height ) );
+		metrics.y = std::max( metrics.y, static_cast<float>( glyph.bounds.size.y ) );
 	}
 
 	metrics.x = std::max( longest_line, metrics.x );

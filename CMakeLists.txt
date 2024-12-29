@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 3.7.2 )
+cmake_minimum_required( VERSION 3.22 )
 
 set( SFGUI_MAJOR_VERSION 0 )
 set( SFGUI_MINOR_VERSION 4 )
@@ -24,7 +24,7 @@ option( SFML_STATIC_LIBRARIES   "Do you want to link SFML statically?"          
 # Find packages.
 find_package( OpenGL REQUIRED )
 
-if( NOT TARGET sfml-graphics )
+if( NOT TARGET SFML::Graphics )
     find_package( SFML 3 REQUIRED COMPONENTS Graphics )
 endif()
 
@@ -62,7 +62,7 @@ if( SFGUI_INCLUDE_FONT )
 	target_compile_definitions( ${TARGET} PRIVATE SFGUI_INCLUDE_FONT )
 endif()
 
-target_link_libraries( ${TARGET} PUBLIC SFML::Graphics ${OPENGL_gl_LIBRARY} )
+target_link_libraries( ${TARGET} PUBLIC SFML::Graphics OpenGL::GL )
 
 # Tell the compiler to export when necessary.
 set_target_properties( ${TARGET} PROPERTIES DEFINE_SYMBOL SFGUI_EXPORTS )
@@ -110,7 +110,7 @@ if( WIN32 )
 		set_target_properties( ${TARGET} PROPERTIES IMPORT_SUFFIX ".a" )
 	endif()
 
-	set( SHARE_PATH "." )
+	set( SHARE_PATH ${CMAKE_CURRENT_SOURCE_DIR} )
 	set( LIB_PATH "lib" )
 elseif( APPLE )
 	find_library( COREFOUNDATION_LIBRARY CoreFoundation )
@@ -120,7 +120,7 @@ elseif( APPLE )
 	set( LIB_PATH "lib" )
 elseif( "${CMAKE_SYSTEM_NAME}" MATCHES "Linux" )
 	find_package( X11 REQUIRED )
-	target_link_libraries( ${TARGET} PUBLIC ${X11_LIBRARIES} )
+	target_link_libraries( ${TARGET} PUBLIC X11::X11 )
 	set( SHARE_PATH "${CMAKE_INSTALL_PREFIX}/share/SFGUI" )
 	
 	if( LIB_SUFFIX )
@@ -134,7 +134,7 @@ else()
 endif()
 
 if( CMAKE_CXX_COMPILER MATCHES ".*clang[+][+]" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCXX)
-	target_compile_options( SFGUI PRIVATE -Wall -Wextra -Wshadow -Wconversion -Wsign-conversion -Wunused-parameter -Wno-long-long -pedantic )
+	target_compile_options( SFGUI PRIVATE -Wall -Wextra -Wshadow -Wconversion -Wsign-conversion -Wunused-parameter -pedantic )
 endif()
 
 ### EXAMPLES ###

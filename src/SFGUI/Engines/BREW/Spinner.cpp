@@ -17,7 +17,7 @@ std::unique_ptr<RenderQueue> BREW::CreateSpinnerDrawable( std::shared_ptr<const 
 	auto inner_radius = GetProperty<float>( "InnerRadius", spinner );
 	auto rod_thickness = GetProperty<float>( "RodThickness", spinner );
 	auto stopped_alpha = GetProperty<unsigned int>( "StoppedAlpha", spinner );
-	auto radius = std::min( spinner->GetAllocation().width, spinner->GetAllocation().height ) / 2.f;
+	auto radius = std::min( spinner->GetAllocation().size.x, spinner->GetAllocation().size.y ) / 2.f;
 
 	std::unique_ptr<RenderQueue> queue( new RenderQueue );
 
@@ -27,7 +27,7 @@ std::unique_ptr<RenderQueue> BREW::CreateSpinnerDrawable( std::shared_ptr<const 
 	// SFML does this too, for compatibility reasons, so lay off the flame :P
 	static const auto two_pi = 3.141592654f * 2.f;
 
-	sf::Vector2f center_offset( spinner->GetAllocation().width / 2.f, spinner->GetAllocation().height / 2.f );
+	sf::Vector2f center_offset( spinner->GetAllocation().size.x / 2.f, spinner->GetAllocation().size.y / 2.f );
 
 	// We just have to produce the spinner in stopped state.
 	// The class itself will take care of the started state.

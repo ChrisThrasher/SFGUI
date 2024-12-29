@@ -8,6 +8,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <string>
 #include <memory>
+#include <optional>
 #include <vector>
 #include <cstdint>
 
@@ -330,12 +331,12 @@ class SFGUI_API Widget : public Object, public std::enable_shared_from_this<Widg
 		 * @param button Given mouse button. Defaults to check if ANY button is down.
 		 * @return true if the given mouse button is down.
 		 */
-		bool IsMouseButtonDown( sf::Mouse::Button button = sf::Mouse::ButtonCount ) const;
+		bool IsMouseButtonDown( std::optional<sf::Mouse::Button> button = {} ) const;
 
 		/** Set whether the given mouse button is down.
 		 * @param button Given mouse button. Defaults to clear button down state for all buttons.
 		 */
-		void SetMouseButtonDown( sf::Mouse::Button button = sf::Mouse::ButtonCount );
+		void SetMouseButtonDown( std::optional<sf::Mouse::Button> button = {} );
 
 		// Internal handling methods.
 
@@ -382,7 +383,7 @@ class SFGUI_API Widget : public Object, public std::enable_shared_from_this<Widg
 		/** Handle text event.
 		 * @param character Character.
 		 */
-		virtual void HandleTextEvent( std::uint32_t character );
+		virtual void HandleTextEvent( char32_t character );
 
 		/** Handle mouse enter.
 		 * @param x Mouse X position.
